@@ -4,13 +4,22 @@ resource "aws_security_group" "nomad_sg" {
   name        = "${var.project_name}-security-group"
   description = "Security group for Nomad testing cluster"
 
-  # SSH access
+  # SSH access from your IP
   ingress {
-    description = "SSH"
+    description = "SSH from external"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.allowed_ssh_cidr]
+  }
+
+  # SSH access between cluster nodes
+  ingress {
+    description = "SSH between nodes"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    self        = true
   }
 
   # Nomad HTTP API
